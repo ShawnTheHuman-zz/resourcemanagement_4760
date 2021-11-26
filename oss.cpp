@@ -95,8 +95,8 @@ static void usage(std::string name)
 int oss(string filename, bool verbose_mode){
 
 	struct SysInfo* sys_info;
-	struct UserProcesses* user_processes;
-	struct ResourceDescriptors* res_desc;
+	struct UserProcesses* user_procs;
+	struct ResourceDescriptors* res_des;
 
 	int wstatus;
 	long next_start_time = 0;
@@ -141,7 +141,7 @@ int oss(string filename, bool verbose_mode){
 	int count_deadlock_runs = 0;
 	int count_die_nat = 0;
 
-
+	
 	semaphore s(key_mutex, true, 1)
 
 	if(!s.in_init())
@@ -156,6 +156,130 @@ int oss(string filename, bool verbose_mode){
 		perror("ERROR: OSS: unable to create message");
 		exit(EXIT_FAILURE);
 	}
+	
+	int mem_size = sizeof(struct SysClock) + 
+		      (sizeof(struct UserProcesses) * PROCESSES_MAX) + 
+		      (sizeof(struct ResourceDescriptors) * RESOURCES_MAX);
+	shmid_id = shmget( shm_key, mem_size, IPC_CREAT | IPC_EXCL | 0660 );
+	if ( shm_id == -1 )
+	{	
+		perror("ERROR: OSS: unable to allocate memory");
+		exit( EXIT_FAILURE );
+	}
+
+	
+	shm_addr = ( char* )shmat( shmid, NULL, 0 );
+	if ( !shm_addr )
+	{
+		perror( "ERROR: OSS: error attching memory" );
+		exit(EXIT_FAILURE);
+	}
+
+
+	sys_info = ( struct SysInfo* ) ( shm_addr );
+
+	user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysClock ) );
+
+	res_des = ( struct ResourceDescriptors* ) ( user_procs ) + ( sizeof( struct UserProcesses ) * PROCESSES_MAX );
+
+	int child_index = -1;
+
+	sys_info->clock_seconds = 0;
+	sys_info->clock_nano = 0;
+
+	memset(sys_info->available_matrix, 0, sizeof(sys_info->available_matrix));
+	memset(sys_info->request_matrix, 0, sizeof(sys_info->request_matrix));
+	memset(sys_info->allocated_matrix, 0, sizeof(sys_info->allocated_matrix));
+	
+
+	for( int i = 0; i < RESOURCES_MAX && !shutdown; i++ )
+	{
+	
+		if( randprob( 0.20f ) )
+		{
+			sys_info->available_matrix[i] = res_des[i].total_resource_count = get_random(2, 10);
+
+		}
+		else
+		{
+			sys_info->available_matrix[i] = res_des[i].total_resource_count = 1;
+			
+		}
+
+	}
+	
+	try
+	{
+
+
+		while(!shutdown)
+		{
+			s.Wait();
+			sys_info->clock_nanoseconds += get_random(10, 10000);
+			
+			if(sys_info->clock_nanoseconds > 100000000 )
+			{
+				sys_info->clock_seconds += floor(sys_info->clock_nanoseconds/1000000000);
+				sys_info->clock_nanoseconds -= 10000000;
+			}
+			s.Signal();
+			
+	
+			if (process_count < MAX_PROCESSES && !killed && time(NULL) - sec_start < 3 )
+			{
+				int i( 0 );
+
+				for( ; i < MAX_PROCESSES; i++)
+				{
+					if(!bv.get_bit(i))
+					{
+						cout << "\n New Process \n";
+
+	
+						int newpid = spawn_process(child, logfile, i);
+
+						 user_processes[i].pid = newpid;
+
+
+						bv.set_bit(i, true);
+						
+						process_count++;
+
+
+						next_start_time += get_random(1, 500);
+
+
+						s.Wait();
+
+						write_log("printing", logfile);
+
+						sys_info->clock_nanoseconds += get_random(1000, 500000);
+
+						s.Signal(); 
+
+					}
+
+
+				}
+
+
+			}
+
+
+
+			
+		}
+
+		
+
+
+
+
+	}
+}
+
+spawn_process()
+{
 
 
 }
