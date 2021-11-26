@@ -258,16 +258,76 @@ int oss(string filename, bool verbose_mode){
 						s.Signal(); 
 
 					}
+				}
+			}
+
+			if (( sig_int_flag || (time(NULL) - sec_start) > max_seconds) && !killed)
+			{
+				killed = true;
+
+				for( int i = 0; i < PROCESSES_MAX; i++)
+				{
+					if(bv.get_bits(i))
+					{
+						kill(UserProcesses[i].pid, SIGQUIT);	
+						bv.set_bits( i, false );
+
+						count_died_nat++;
+
+					}
+				}
+				if( sig_int_flag)
+				{
+					perror("Processes killed by ctrl-c. ");
+
+				}
+				else
+				{	
+					perror("Processes killed by timeout");
 
 
 				}
+			}
+			
+			int wait_pid = waitpid( -1, &wstatus, WHOHANG | WUNTRACED | WCONTINUED );
 
+
+			if( wait_pid == -1 )
+			{
+				shutdown = true;
+				continue;
+			} 
+
+			if( WIFEXITED(wstatus) && wait_pid > 0 )
+			{
+				for( int i = 0; i < PROCESSES_MAX; i++ )
+				{
+					if( UserProcesses[i].pid == wait_pid )
+					{
+						UserProcesses[i].pid = 0;
+						bv.set_bit(i, false)
+
+						s.Wait();
+
+						write_log("  ", logfile);
+						
+						s.Signal();
+						break;
+
+					}
+				}
+			}else if (WIFSIGNALED(wstatus) && wait_pid > 0) {
+				cout << wait_pid << " killed by signal " << WTERMSIG(wstatus) << endl;
+			}else if (WIFSTOPPED(wstatus) && wait_pid > 0) {
+				cout << wait_pid << " stopped by signal " << WTERMSIG(wstatus) << endl;
+			}else if (WIFSIGNALED(wstatus) && wait_pid > 0) {
+			}
+			
+
+			if(!killed){
+				
 
 			}
-
-
-
-			
 		}
 
 		
