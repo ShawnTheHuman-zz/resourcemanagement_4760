@@ -265,7 +265,7 @@ int oss(string filename, bool verbose_mode){
 			{
 				killed = true;
 
-				for( int i = 0; i < PROCESSES_MAX; i++)
+				for( int i = 0; i < MAX_PROCESSES; i++)
 				{
 					if(bv.get_bits(i))
 					{
@@ -300,7 +300,7 @@ int oss(string filename, bool verbose_mode){
 
 			if( WIFEXITED(wstatus) && wait_pid > 0 )
 			{
-				for( int i = 0; i < PROCESSES_MAX; i++ )
+				for( int i = 0; i < MAX_PROCESSES; i++ )
 				{
 					if( UserProcesses[i].pid == wait_pid )
 					{
@@ -324,8 +324,71 @@ int oss(string filename, bool verbose_mode){
 			}
 			
 
-			if(!killed){
-				
+			if(!killed)
+			{
+				if( msgrcv(msgid, (void *) &msg, sizeof(message), OSS_MQ_TYPE, IPC_NOWAIT) > 0 )
+				{
+					s.Wait();
+					log_message();
+
+					s.Signal();
+
+					if(msg.action == REQ_SHUTDOWN)
+					{
+						for( int i = 0, i < RESOURCES_MAX; i++)
+						{
+							for(vector<int>::iterator item = res_des[i].allocated_procs.begin(); item != res_des[i].allocated_procs.end(); ++item)
+							{
+								if( *item == msg.proc_pid )
+								{
+									res_des[i].allocated_procs.erase(item);
+									count_released++;
+	
+								}
+
+							}
+
+						}
+						s.Wait();
+
+						log_message(); // add later
+						
+						s.Signal();
+
+
+						msg.action = OK;
+						msg.type = msg.proc_pid;
+						
+						int n = msgsnd( msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
+					}	
+					else if( msg.action == REQ_CREATE)
+					{
+						count_requested++;
+						
+						if( res_des[msg.res_index].total_resource_count > res_des[msg.res_index].allocated_procs.size())
+						{
+							count_requested++;
+
+							if( res_des[msg.res_index].total_resource_count > res_des[msg.res_index].allocated_procs.size())
+							{	
+								res_des[msg.res_index].allocated_procs.push_back(msg.proc_id);
+								count_allocated++;
+
+								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX);
+								set_array(sys_info->allocated_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX, new_arr + 1);
+
+								s.Wait();
+								
+								log_message();
+					
+							}
+
+						}
+
+					}
+
+
+				}
 
 			}
 		}
