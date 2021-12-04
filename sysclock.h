@@ -169,7 +169,37 @@ std::string print_time(const char* str)
 	return new_time;
 }
 
-bool write_log(std::string& log, std::string filename)
+
+
+
+/* formats a string regardless of size.  */
+std::string string_format(const std::string fmt, ...)
+{
+	int size = ((int)fmt.size()) * 2 + 50;
+	std::string str;
+	va_list ap;
+	while (1) {    
+		str.resize(size);
+		va_start(ap, fmt);
+		int n = vsnprintf((char *)str.data(), size, fmt.c_str(), ap);
+		va_end(ap);
+		if (n > -1 && n < size) 
+		{ 
+			str.resize();
+			return str;
+		}
+		if (n > -1)  
+			size = n + 1; 
+		else
+			size *= 2;
+	}
+	return str;
+}
+
+
+
+
+void write_log(std::string& log, std::string filename)
 {
 	std::ofstream log_file (filename.c_str(), std::ofstream::out | std::ofstream::app);
 	if(log_file.is_open())
@@ -186,7 +216,25 @@ bool write_log(std::string& log, std::string filename)
 		perror("ERROR: failed to write to log");
 		return false;
 	}
-
-
 }
+
+/* second writer for verbose mode  */
+void write_log( std::string sys, int sec, int nano, std::string text, int pid, int index, std::string filename )
+{
+	std::cout << string_format("%s%.2d %.6d:%.10d\t%s PID %d", sys.c_str(), index, sec, nano, text.c_str(), pid) << std::endl;
+
+	std::ofstream logfile ( filename.c_str(), std::ofstream::out | std::ofstream::app );
+
+	if( logfile.is_open())
+	{
+		logfile << string_format("%s%.2d %.6d:%.10d\t%s PID %d", sys.c_str(), index, sec, nano, text.c_str(), pid) << std::endl;
+
+		logfile.close();
+	}
+	else
+	{
+		perror("ERROR writing to file");
+	}
+}
+
 #endif

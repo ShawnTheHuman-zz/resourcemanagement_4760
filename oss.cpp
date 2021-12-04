@@ -379,15 +379,85 @@ int oss(string filename, bool verbose_mode){
 
 								s.Wait();
 								
-								log_message();
-					
+								log_message("OSS ", sys_info->clock_seconds, 
+										    sys_info->clock_nano, 
+										    " Process created " + 
+										    (msg.proc_index).c_str() + ":" + 
+										   (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
+
+								
+								if( verbose_mode && count_allocated%20 == 0 )
+									log_message(array_string(sys_info->allocated_matrix, RESOURCES_MAX * PROCESSES_MAX, RESOURCES_MAX), logfile);
+
+
+								s.Signal();
+								
+								msg.action = OK;
+								msg.type = msg.proc_pid;
+
+								int n = msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
+								
+							}
+							else
+							{
+								if(verbose_mode)
+								{
+									s.Wait();
+									
+									log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nano, "RESOURCE UNAVAILABLE: " (msg.proc_index).c_string() + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
+				
+									s.Signal();
+								}
+								
+								res_des[msg.res_index].wait_queue.push_back(msg.proc_pid);
+
+								count_wait++;
+
+								int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX);
+
+								set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX, new_val + 1);
 							}
 
 						}
+						else if(msg.action == REQ_DESTROY)
+						{
+							if(verbose_mode)
+							{
+								s.Wait();
+								log_message("OSS ", sys_info->clock_seconds,
+                                                                                    sys_info->clock_nano,
+                                                                                    " Process released " +
+                                                                                    (msg.proc_index).c_str() + ":" +
+                                                                                   (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
+								s.Signal();
+
+							}
+                                                        for(vector<int>::iterator item = res_des[i].allocated_procs.begin(); item != res_des[i].allocated_procs.end(); ++item)
+                                                        {
+                                                                if( *item == msg.proc_pid )
+                                                                {
+                                                                        res_des[i].allocated_procs.erase(item);
+                                                                        count_released++;
+
+									int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX);
+
+	                                                                set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX, max(new_val - 1, 0 ));
+
+									break;
+                                                                }
+
+                                                        }
+							msg.action = OK;
+                                                        msg.type = msg.proc_pid;
+
+                                                        int n = msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
+						}
 
 					}
-
-
+				}
+				for(int i=0; i < RESOURCES_MAX; i++)
+				{
+					
 				}
 
 			}
