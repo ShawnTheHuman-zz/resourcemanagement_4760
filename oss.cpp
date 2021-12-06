@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
 		switch(opt)
 		{
 			case 'h':
+			
 				usage(argv[0]);
 				return EXIT_SUCCESS;
 
