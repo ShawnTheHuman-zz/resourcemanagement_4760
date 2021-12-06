@@ -15,7 +15,6 @@
 #include "oss.h"
 #include "deadlock.h"
 
-#define MAX_PROCESSES 100
 
 static void usage(std::string);
 
@@ -108,7 +107,7 @@ int oss(string filename, bool verbose_mode){
 
 	const pid_t pid = getpid();
 
-
+	
 	srand( time(0) ^ pid );
 
 
@@ -124,7 +123,7 @@ int oss(string filename, bool verbose_mode){
 		print_log("Verbose Mode: OFF", logfile);	
 
 
-	bitvector bv(PROCESSES_MAX);
+	bitvector bv(MAX_PROCESSES);
 
 	signal(SIGINT, signal_handler);
 
@@ -158,8 +157,8 @@ int oss(string filename, bool verbose_mode){
 	}
 	
 	int mem_size = sizeof(struct SysClock) + 
-		      (sizeof(struct UserProcesses) * PROCESSES_MAX) + 
-		      (sizeof(struct ResourceDescriptors) * RESOURCES_MAX);
+		      (sizeof(struct UserProcesses) * MAX_PROCESSES) + 
+		      (sizeof(struct ResourceDescriptors) * MAX_RESOURCES);
 	shmid_id = shmget( shm_key, mem_size, IPC_CREAT | IPC_EXCL | 0660 );
 	if ( shm_id == -1 )
 	{	
@@ -180,7 +179,7 @@ int oss(string filename, bool verbose_mode){
 
 	user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysClock ) );
 
-	res_des = ( struct ResourceDescriptors* ) ( user_procs ) + ( sizeof( struct UserProcesses ) * PROCESSES_MAX );
+	res_des = ( struct ResourceDescriptors* ) ( user_procs ) + ( sizeof( struct UserProcesses ) * MAX_PROCESSES );
 
 	int child_index = -1;
 
@@ -192,7 +191,7 @@ int oss(string filename, bool verbose_mode){
 	memset(sys_info->allocated_matrix, 0, sizeof(sys_info->allocated_matrix));
 	
 
-	for( int i = 0; i < RESOURCES_MAX && !shutdown; i++ )
+	for( int i = 0; i < MAX_RESOUR && !shutdown; i++ )
 	{
 	
 		if( randprob( 0.20f ) )
@@ -335,7 +334,8 @@ int oss(string filename, bool verbose_mode){
 
 					if(msg.action == REQ_SHUTDOWN)
 					{
-						for( int i = 0, i < RESOURCES_MAX; i++)
+						for( int i = 0, i < MAX_RESOURCES
+	; i++)
 						{
 							for(vector<int>::iterator item = res_des[i].allocated_procs.begin(); item != res_des[i].allocated_procs.end(); ++item)
 							{
@@ -374,8 +374,10 @@ int oss(string filename, bool verbose_mode){
 								res_des[msg.res_index].allocated_procs.push_back(msg.proc_id);
 								count_allocated++;
 
-								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX);
-								set_array(sys_info->allocated_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX, new_arr + 1);
+								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+			);
+								set_array(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+			, new_arr + 1);
 
 								s.Wait();
 								
@@ -387,7 +389,9 @@ int oss(string filename, bool verbose_mode){
 
 								
 								if( verbose_mode && count_allocated%20 == 0 )
-									log_message(array_string(sys_info->allocated_matrix, RESOURCES_MAX * PROCESSES_MAX, RESOURCES_MAX), logfile);
+									log_message(array_string(sys_info->allocated_matrix, MAX_RESOURCES
+				 * MAX_PROCESSES, MAX_RESOURCES
+				), logfile);
 
 
 								s.Signal();
@@ -404,7 +408,8 @@ int oss(string filename, bool verbose_mode){
 								{
 									s.Wait();
 									
-									log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nano, "RESOURCE UNAVAILABLE: " (msg.proc_index).c_string() + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
+									log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nano, "RESOURCE UNAVAILABLE: " 
+									(msg.proc_index).c_string() + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
 				
 									s.Signal();
 								}
@@ -413,9 +418,11 @@ int oss(string filename, bool verbose_mode){
 
 								count_wait++;
 
-								int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX);
+								int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+			);
 
-								set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX, new_val + 1);
+								set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+			, new_val + 1);
 							}
 
 						}
@@ -425,10 +432,10 @@ int oss(string filename, bool verbose_mode){
 							{
 								s.Wait();
 								log_message("OSS ", sys_info->clock_seconds,
-                                                                                    sys_info->clock_nano,
-                                                                                    " Process released " +
-                                                                                    (msg.proc_index).c_str() + ":" +
-                                                                                   (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
+                                			sys_info->clock_nano,
+                                			" Process released " +
+                                            (msg.proc_index).c_str() + ":" +
+                                            (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
 								s.Signal();
 
 							}
@@ -436,18 +443,20 @@ int oss(string filename, bool verbose_mode){
                                                         {
                                                                 if( *item == msg.proc_pid )
                                                                 {
-                                                                        res_des[i].allocated_procs.erase(item);
-                                                                        count_released++;
+                                                                    res_des[i].allocated_procs.erase(item);
+                                                                    count_released++;
 
-									int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX);
+																	int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+												);
 
-	                                                                set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, RESOURCES_MAX, max(new_val - 1, 0 ));
+	                                                                set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+												, max(new_val - 1, 0 ));
 
-									break;
+																	break;
                                                                 }
 
                                                         }
-							msg.action = OK;
+														msg.action = OK;
                                                         msg.type = msg.proc_pid;
 
                                                         int n = msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
@@ -455,7 +464,7 @@ int oss(string filename, bool verbose_mode){
 
 					}
 				}
-				for(int i=0; i < RESOURCES_MAX; i++)
+				for(int i=0; i < MAX_RESOURCES; i++)
 				{
 					
 				}
