@@ -184,7 +184,7 @@ int oss(string filename, bool verbose_mode){
 	int child_index = -1;
 
 	sys_info->clock_seconds = 0;
-	sys_info->clock_nano = 0;
+	sys_info->clock_nanoseconds = 0;
 
 	memset(sys_info->available_matrix, 0, sizeof(sys_info->available_matrix));
 	memset(sys_info->request_matrix, 0, sizeof(sys_info->request_matrix));
@@ -214,12 +214,12 @@ int oss(string filename, bool verbose_mode){
 		while(!shutdown)
 		{
 			s.Wait();
-			sys_info->clock_nanoseconds += get_random(10, 10000);
+			sys_info->clock_nanosecondsseconds += get_random(10, 10000);
 			
-			if(sys_info->clock_nanoseconds > 100000000 )
+			if(sys_info->clock_nanosecondsseconds > 100000000 )
 			{
-				sys_info->clock_seconds += floor(sys_info->clock_nanoseconds/1000000000);
-				sys_info->clock_nanoseconds -= 10000000;
+				sys_info->clock_seconds += floor(sys_info->clock_nanosecondsseconds/1000000000);
+				sys_info->clock_nanosecondsseconds -= 10000000;
 			}
 			s.Signal();
 			
@@ -252,7 +252,7 @@ int oss(string filename, bool verbose_mode){
 
 						write_log("printing", logfile);
 
-						sys_info->clock_nanoseconds += get_random(1000, 500000);
+						sys_info->clock_nanosecondsseconds += get_random(1000, 500000);
 
 						s.Signal(); 
 
@@ -382,7 +382,7 @@ int oss(string filename, bool verbose_mode){
 								s.Wait();
 								
 								log_message("OSS ", sys_info->clock_seconds, 
-										    sys_info->clock_nano, 
+										    sys_info->clock_nanoseconds, 
 										    " Process created " + 
 										    (msg.proc_index).c_str() + ":" + 
 										   (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
@@ -408,7 +408,7 @@ int oss(string filename, bool verbose_mode){
 								{
 									s.Wait();
 									
-									log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nano, "RESOURCE UNAVAILABLE: " 
+									log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "RESOURCE UNAVAILABLE: " 
 									(msg.proc_index).c_string() + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
 				
 									s.Signal();
@@ -418,11 +418,9 @@ int oss(string filename, bool verbose_mode){
 
 								count_wait++;
 
-								int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
-			);
+								int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES);
 
-								set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
-			, new_val + 1);
+								set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES, new_val + 1);
 							}
 
 						}
@@ -432,7 +430,7 @@ int oss(string filename, bool verbose_mode){
 							{
 								s.Wait();
 								log_message("OSS ", sys_info->clock_seconds,
-                                			sys_info->clock_nano,
+                                			sys_info->clock_nanoseconds,
                                 			" Process released " +
                                             (msg.proc_index).c_str() + ":" +
                                             (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
@@ -466,22 +464,131 @@ int oss(string filename, bool verbose_mode){
 				}
 				for(int i=0; i < MAX_RESOURCES; i++)
 				{
-					
+					if(res_des[i].total_resource_count > res_des[i].allocated_procs.size() && res_des[i].wait_queue.size() > 0)
+					{
+						int waiting_proc = res_des[i].wait_queue.front();
+
+						assert( !res_des[i].wait_queue.erase(res_des[i].wait_queue.begin())
+						res_des[i].allocated_procs.push_back(waiting_proc);
+
+						count_allocated++;
+
+						int index = -1;
+						for(int j(0);j < MAX_PROCESSES; j++)
+						{
+							if(user_processes[j].pid == waiting_proc)
+								index = j;
+						}
+						if(index > -1)
+						{
+							if(verbose_mode)
+							{
+								s.Wait();
+								log_message("OSS ", sys_info->clock_seconds,
+                                			sys_info->clock_nanoseconds,
+                                			" Process allocated after wait  " + int2str(waiting_proc), waiting_proc, waiting_proc, logfile);
+								s.Signal();
+							}
+							int new_val = get_array(sys_info->allocated_matrix, index, i, MAX_RESOURCES);
+
+							set_array_value(sys_info->allocated_matrix, index, i, MAX_RESOURCES, new_val + 1);
+							new_val = get_array(sys_info->request_matrix, index, i, MAX_RESOURCES);
+							set_array_value(sys_info->allocated_matrix, index, i, MAX_RESOURCES, new_val - 1);
+						}
+						msg.action = OK;
+                        msg.type = waiting_proc;
+					    int n = msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
+					}
+				}
+				if((time(NULL) - sec_start) > deadlock_timer)
+				{
+					deadlock_timer++;
+					count_deadlock_runs++;
+
+					int deadlocked = deadlock(sys_info->available_matrix, MAX_PROCESSES, sys_info->request_matrix, sys_info->allocated_matrix);
+
+					if(deadlocked > -1)
+					{
+						s.Wait();
+						log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "Deadlock detected " + int2str(deadlocked) + ": terminating process", msg.proc_id, msg.proc_index, logfile);
+
+						s.Signal();
+
+						count_deadlocked++;
+						kill(user_processes[deadlocked].pid, SIGQUIT);
+						bv.set_bit(deadlocked, false);
+					}
 				}
 
 			}
 		}
+		catch(...){
+			cout << "fatal error occured. aborting." << endl;
+		}
 
+		total_time = sys_info->clock_seconds;
+
+
+		s.Wait();
 		
+		log_message("OSS: releasing shared memory.", logfile);
+
+		if(shmdt(shm_addr) == -1)
+		{
+			perror("OSS: ERROR: unable to detach memory")
+		}
+		if (shmctl(shm_id, IPC_RMID, NULL) == -1) 
+		{
+        	perror("OSS: ERROR: deallocating shared memory ");
+    	}
+		log_message(": Memory de-allocated ", logfile);
+
+		msgctl(msgid,IPC_RMID,NULL);
+
+		log_message("________________________________\n", logfile);
+    	log_message("OSS Statistics", logfile);
+    	log_message("Total Requests Granted:\t\t\t" + int2str(count_allocated), logfile);
+    	log_message("Requests Granted After Wait:\t\t" + int2str(count_wait), logfile);
+    	log_message("Processes Killed By Deadlock:\t\t" + int2str(count_deadlocked), logfile);
+    	log_message("Processes Die Naturally:\t\t" + int2str(count_died_nat), logfile);
+    	log_message("Times Deadlock Ran:\t\t\t" + int2str(count_deadlock_runs), logfile);
+
+		if(count_allocated > 0)
+		{
+			string deadlock_percent = (float)count_deadlocked/(float)count_allocated*100.0f;
+			log_message("Average percent of deadlock:\t\t\t" + deadlock_percent, logfile);
+		}
+
+		s.Signal();
+		cout << endl;
 
 
-
-
+		return EXIT_SUCCESS;
 	}
 }
 
-spawn_process()
+spawn_process(string proc, string file, int arr)
 {
+	pid_t pid = fork();
 
+	if(pid < 0)
+	{
+		perror("OSS: ERROR: unable to fork")
+		return EXIT_FAILURE;
+	}
+
+	if(pid == 0 )
+	{
+		if(arr < 0)
+			execl(proc.c_str(), proc.c_str(), file.c_str(), "50", (char*)0);
+		else
+		{
+			string array_string = int2str(array_string);
+			execl(proc.c_str(), proc.c_str(), array_string.c_str(), file.c_str(), "50", (char*)0)
+		}
+		exit(EXIT_SUCCESS);
+	}
+	else 
+		return pid;
 
 }
