@@ -28,6 +28,8 @@ bool deadlock ( const int * available, const int m, const int n, const int * req
 	int work[m];
 	bool finish[n];
 
+	int p = 0;
+
 	for ( int i( 0 ); i < m; )
 	{
 		work[i] = available[i];
@@ -36,7 +38,7 @@ bool deadlock ( const int * available, const int m, const int n, const int * req
 
 	for ( int i( 0 ); i < n; finish[i++] = false)
 
-	int p = 0;
+	
 
 	for ( ; p < n; p++ ) 
 	{

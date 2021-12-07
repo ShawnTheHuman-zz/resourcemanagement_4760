@@ -583,7 +583,7 @@ int spawn_process(string proc, string file, int arr)
 			execl(proc.c_str(), proc.c_str(), file.c_str(), "50", (char*)0);
 		else
 		{
-			string array_string = int2str(array_string);
+			string array_string = int2str(arr);
 			execl(proc.c_str(), proc.c_str(), array_string.c_str(), file.c_str(), "50", (char*)0);
 		}
 		exit(EXIT_SUCCESS);
