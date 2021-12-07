@@ -1,3 +1,7 @@
+# Shawn brown
+# makefile
+
+
 CC      = g++
 CFLAGS  = -std=c++11 -g -Wall -Wshadow
 DEPS = sysclock.h

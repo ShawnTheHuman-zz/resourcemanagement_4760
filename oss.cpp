@@ -147,6 +147,7 @@ int oss(string logfile, bool verbose_mode){
 	/* create semaphore */
 	Semaphore s(mutex_key, true, 1);
 
+	/* checking if semaphore is initialized */
 	if(!s.is_init())
 	{
 		perror("ERROR: OSS: unable to create semaphore");
@@ -160,9 +161,11 @@ int oss(string logfile, bool verbose_mode){
 		exit(EXIT_FAILURE);
 	}
 	
+	/* get size necessary for shared memory */
 	int mem_size = sizeof(struct SysClock) + 
 		      (sizeof(struct UserProcesses) * MAX_PROCESSES) + 
 		      (sizeof(struct ResourceDescriptors) * MAX_RESOURCES);
+			  
 	shm_id = shmget( shm_key, mem_size, IPC_CREAT | IPC_EXCL | 0660 );
 	if ( shm_id == -1 )
 	{	
