@@ -374,10 +374,8 @@ int oss(string logfile, bool verbose_mode){
 								res_des[msg.res_index].allocated_procs.push_back(msg.proc_pid);
 								count_allocated++;
 
-								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
-			);
-								set_array(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
-			, new_arr + 1);
+								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES);
+								set_array(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES, new_arr + 1);
 
 								s.Wait();
 								
@@ -389,9 +387,7 @@ int oss(string logfile, bool verbose_mode){
 
 								
 								if( verbose_mode && count_allocated%20 == 0 )
-									write_log(array_string(sys_info->allocated_matrix, MAX_RESOURCES
-				 * MAX_PROCESSES, MAX_RESOURCES
-				), logfile);
+									write_log(array_string(sys_info->allocated_matrix, MAX_RESOURCES* MAX_PROCESSES, MAX_RESOURCES), logfile);
 
 
 								s.Signal();
@@ -444,11 +440,9 @@ int oss(string logfile, bool verbose_mode){
                                                                     res_des[msg.res_index].allocated_procs.erase(item);
                                                                     count_released++;
 
-																	int new_val = get_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
-												);
+																	int new_val = get_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES);
 
-	                                                                set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
-												, max(new_val - 1, 0 ));
+	                                                                set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES, max(new_val - 1, 0 ));
 
 																	break;
                                                                 }
@@ -556,7 +550,7 @@ int oss(string logfile, bool verbose_mode){
 
 		if(count_allocated > 0)
 		{
-			string deadlock_percent = (float)count_deadlocked/(float)count_allocated*100.0f;
+			string deadlock_percent = float2str((float)count_deadlocked/(float)count_allocated*100.0f);
 			write_log("Average percent of deadlock:\t\t\t" + deadlock_percent, logfile);
 		}
 
@@ -565,7 +559,9 @@ int oss(string logfile, bool verbose_mode){
 
 
 		return EXIT_SUCCESS;
+	
 	}
+
 }
 
 int spawn_process(string proc, string file, int arr)
@@ -574,7 +570,7 @@ int spawn_process(string proc, string file, int arr)
 
 	if(pid < 0)
 	{
-		perror("OSS: ERROR: unable to fork")
+		perror("OSS: ERROR: unable to fork");
 		return EXIT_FAILURE;
 	}
 
