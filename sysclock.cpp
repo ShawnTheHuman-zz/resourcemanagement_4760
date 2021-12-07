@@ -135,23 +135,22 @@ std::string string_format(const std::string fmt, ...)
 
 
 
-void write_log(std::string log, std::string filename)
+void write_log(std::string input, std::string filename)
 {
-	std::ofstream log_file (filename.c_str(), std::ofstream::out | std::ofstream::app);
-	if(log_file.is_open())
-	{
-		
-		log_file << " " << log.c_str() << std::endl;
+	std::cout << input.c_str() << std::endl;
 
-		log_file.close();
 
-		return true;
-	}
-	else
-	{
-		perror("ERROR: failed to write to log");
-		return false;
-	}
+    std::ofstream logFile (LogFileName.c_str(), 
+            std::ofstream::out | std::ofstream::app);
+    if (logFile.is_open())
+    {
+        logFile << input.c_str() << std::endl;
+        logFile.close();
+    }
+    else
+    {
+        perror("Unable to write to log file");
+    }
 }
 
 /* second writer for verbose mode  */

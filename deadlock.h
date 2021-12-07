@@ -36,7 +36,7 @@ bool deadlock ( const int * available, const int m, const int n, const int * req
 
 	for ( int i( 0 ); i < n; finish[i++] = false)
 
-	int p( 0 );
+	int p = 0;
 
 	for ( ; p < n; p++ ) 
 	{

@@ -143,7 +143,7 @@ int oss(string logfile, bool verbose_mode){
 	int count_died_nat = 0;
 
 	
-	Semaphore s(mutex_key, true, 1)
+	Semaphore s(mutex_key, true, 1);
 
 	if(!s.is_init())
 	{
@@ -269,7 +269,7 @@ int oss(string logfile, bool verbose_mode){
 				{
 					if(bv.get_bit(i))
 					{
-						kill(UserProcesses[i].pid, SIGQUIT);	
+						kill( user_procs[i].pid, SIGQUIT);	
 						bv.set_bit( i, false );
 
 						count_died_nat++;
@@ -302,9 +302,9 @@ int oss(string logfile, bool verbose_mode){
 			{
 				for( int i = 0; i < MAX_PROCESSES; i++ )
 				{
-					if( UserProcesses[i].pid == wait_pid )
+					if( user_procs[i].pid == wait_pid )
 					{
-						UserProcesses[i].pid = 0;
+						user_procs[i].pid = 0;
 						bv.set_bit(i, false)
 
 						s.Wait();
@@ -433,7 +433,7 @@ int oss(string logfile, bool verbose_mode){
                                 			sys_info->clock_nanoseconds,
                                 			" Process released " +
                                             int2str(msg.proc_index) + ":" +
-                                            msg.action + msg.proc_pid, msg.proc_index, logfile);
+                                            int2str(msg.action) + msg.proc_pid, msg.proc_index, logfile);
 								s.Signal();
 
 							}
@@ -537,7 +537,7 @@ int oss(string logfile, bool verbose_mode){
 
 		if(shmdt(shm_addr) == -1)
 		{
-			perror("OSS: ERROR: unable to detach memory")
+			perror("OSS: ERROR: unable to detach memory");
 		}
 		if (shmctl(shm_id, IPC_RMID, NULL) == -1) 
 		{
@@ -569,7 +569,7 @@ int oss(string logfile, bool verbose_mode){
 	}
 }
 
-spawn_process(string proc, string file, int arr)
+int spawn_process(string proc, string file, int arr)
 {
 	pid_t pid = fork();
 
