@@ -372,7 +372,7 @@ int oss(string logfile, bool verbose_mode){
 
 							if( res_des[msg.res_index].total_resource_count > res_des[msg.res_index].allocated_procs.size())
 							{	
-								res_des[msg.res_index].allocated_procs.push_back(msg.proc_id);
+								res_des[msg.res_index].allocated_procs.push_back(msg.proc_pid);
 								count_allocated++;
 
 								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
@@ -386,7 +386,7 @@ int oss(string logfile, bool verbose_mode){
 										    sys_info->clock_nanoseconds, 
 										    " Process created " + 
 										    (msg.proc_index).c_str() + ":" + 
-										   (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
+										   (msg.action).c_str() + msg.proc_pid, msg.proc_index, logfile);
 
 								
 								if( verbose_mode && count_allocated%20 == 0 )
@@ -434,7 +434,7 @@ int oss(string logfile, bool verbose_mode){
                                 			sys_info->clock_nanoseconds,
                                 			" Process released " +
                                             (msg.proc_index).c_str() + ":" +
-                                            (msg.action).c_str() + msg.proc_id, msg.proc_index, logfile);
+                                            (msg.action).c_str() + msg.proc_pid, msg.proc_index, logfile);
 								s.Signal();
 
 							}
@@ -511,7 +511,7 @@ int oss(string logfile, bool verbose_mode){
 					if(deadlocked > -1)
 					{
 						s.Wait();
-						log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "Deadlock detected " + int2str(deadlocked) + ": terminating process", msg.proc_id, msg.proc_index, logfile);
+						log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "Deadlock detected " + int2str(deadlocked) + ": terminating process", msg.proc_pid, msg.proc_index, logfile);
 
 						s.Signal();
 
