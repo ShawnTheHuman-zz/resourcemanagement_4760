@@ -140,7 +140,7 @@ int oss(string logfile, bool verbose_mode){
 	int count_wait = 0;
 	int count_deadlocked = 0;
 	int count_deadlock_runs = 0;
-	int count_die_nat = 0;
+	int count_died_nat = 0;
 
 	
 	semaphore s(key_mutex, true, 1)
@@ -289,7 +289,7 @@ int oss(string logfile, bool verbose_mode){
 				}
 			}
 			
-			int wait_pid = waitpid( -1, &wstatus, WHOHANG | WUNTRACED | WCONTINUED );
+			int wait_pid = waitpid( -1, &wstatus, WNOHANG | WUNTRACED | WCONTINUED );
 
 
 			if( wait_pid == -1 )
@@ -335,8 +335,7 @@ int oss(string logfile, bool verbose_mode){
 
 					if(msg.action == REQ_SHUTDOWN)
 					{
-						for( int i = 0, i < MAX_RESOURCES
-	; i++)
+						for( int i = 0; i < MAX_RESOURCES; i++)
 						{
 							for(vector<int>::iterator item = res_des[i].allocated_procs.begin(); item != res_des[i].allocated_procs.end(); ++item)
 							{
@@ -438,11 +437,11 @@ int oss(string logfile, bool verbose_mode){
 								s.Signal();
 
 							}
-                                                        for(vector<int>::iterator item = res_des[i].allocated_procs.begin(); item != res_des[i].allocated_procs.end(); ++item)
+                                                        for(vector<int>::iterator item = res_des[msg.res_index].allocated_procs.begin(); item != res_des[msg.res_index].allocated_procs.end(); ++item)
                                                         {
                                                                 if( *item == msg.proc_pid )
                                                                 {
-                                                                    res_des[i].allocated_procs.erase(item);
+                                                                    res_des[msg.res_index].allocated_procs.erase(item);
                                                                     count_released++;
 
 																	int new_val = get_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
