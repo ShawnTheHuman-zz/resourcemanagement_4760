@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <list>
+#include <cassert>
 #include "sysclock.h"
 #include "bitvector.h"
 #include "oss.h"
@@ -329,7 +330,7 @@ int oss(string logfile, bool verbose_mode){
 				if( msgrcv(msgid, (void *) &msg, sizeof(message), OSS_MQ_TYPE, IPC_NOWAIT) > 0 )
 				{
 					s.Wait();
-					log_message();
+					write_log();
 
 					s.Signal();
 
@@ -351,7 +352,7 @@ int oss(string logfile, bool verbose_mode){
 						}
 						s.Wait();
 
-						log_message(); // add later
+						write_log(); // add later
 						
 						s.Signal();
 
@@ -381,7 +382,7 @@ int oss(string logfile, bool verbose_mode){
 
 								s.Wait();
 								
-								log_message("OSS ", sys_info->clock_seconds, 
+								write_log("OSS ", sys_info->clock_seconds, 
 										    sys_info->clock_nanoseconds, 
 										    " Process created " + 
 										    msg.proc_index + ":" + 
@@ -389,7 +390,7 @@ int oss(string logfile, bool verbose_mode){
 
 								
 								if( verbose_mode && count_allocated%20 == 0 )
-									log_message(array_string(sys_info->allocated_matrix, MAX_RESOURCES
+									write_log(array_string(sys_info->allocated_matrix, MAX_RESOURCES
 				 * MAX_PROCESSES, MAX_RESOURCES
 				), logfile);
 
@@ -408,7 +409,7 @@ int oss(string logfile, bool verbose_mode){
 								{
 									s.Wait();
 									
-									log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "RESOURCE UNAVAILABLE: " 
+									write_log("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "RESOURCE UNAVAILABLE: " 
 									(msg.proc_index).c_string() + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
 				
 									s.Signal();
@@ -429,10 +430,10 @@ int oss(string logfile, bool verbose_mode){
 							if(verbose_mode)
 							{
 								s.Wait();
-								log_message("OSS ", sys_info->clock_seconds,
+								write_log("OSS ", sys_info->clock_seconds,
                                 			sys_info->clock_nanoseconds,
                                 			" Process released " +
-                                            msg.proc_index + ":" +
+                                            int2str(msg.proc_index) + ":" +
                                             msg.action + msg.proc_pid, msg.proc_index, logfile);
 								s.Signal();
 
@@ -468,7 +469,7 @@ int oss(string logfile, bool verbose_mode){
 					{
 						int waiting_proc = res_des[i].wait_queue.front();
 
-						assert( !res_des[i].wait_queue.erase(res_des[i].wait_queue.begin())
+						assert( !res_des[i].wait_queue.erase(res_des[i].wait_queue.begin());
 						res_des[i].allocated_procs.push_back(waiting_proc);
 
 						count_allocated++;
@@ -484,7 +485,7 @@ int oss(string logfile, bool verbose_mode){
 							if(verbose_mode)
 							{
 								s.Wait();
-								log_message("OSS ", sys_info->clock_seconds,
+								write_log("OSS ", sys_info->clock_seconds,
                                 			sys_info->clock_nanoseconds,
                                 			" Process allocated after wait  " + int2str(waiting_proc), waiting_proc, waiting_proc, logfile);
 								s.Signal();
@@ -510,7 +511,7 @@ int oss(string logfile, bool verbose_mode){
 					if(deadlocked > -1)
 					{
 						s.Wait();
-						log_message("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "Deadlock detected " + int2str(deadlocked) + ": terminating process", msg.proc_pid, msg.proc_index, logfile);
+						write_log("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "Deadlock detected " + int2str(deadlocked) + ": terminating process", msg.proc_pid, msg.proc_index, logfile);
 
 						s.Signal();
 
@@ -531,7 +532,7 @@ int oss(string logfile, bool verbose_mode){
 
 		s.Wait();
 		
-		log_message("OSS: releasing shared memory.", logfile);
+		write_log("OSS: releasing shared memory.", logfile);
 
 		if(shmdt(shm_addr) == -1)
 		{
@@ -541,22 +542,22 @@ int oss(string logfile, bool verbose_mode){
 		{
         	perror("OSS: ERROR: deallocating shared memory ");
     	}
-		log_message(": Memory de-allocated ", logfile);
+		write_log(": Memory de-allocated ", logfile);
 
 		msgctl(msgid,IPC_RMID,NULL);
 
-		log_message("________________________________\n", logfile);
-    	log_message("OSS Statistics", logfile);
-    	log_message("Total Requests Granted:\t\t\t" + int2str(count_allocated), logfile);
-    	log_message("Requests Granted After Wait:\t\t" + int2str(count_wait), logfile);
-    	log_message("Processes Killed By Deadlock:\t\t" + int2str(count_deadlocked), logfile);
-    	log_message("Processes Die Naturally:\t\t" + int2str(count_died_nat), logfile);
-    	log_message("Times Deadlock Ran:\t\t\t" + int2str(count_deadlock_runs), logfile);
+		write_log("________________________________\n", logfile);
+    	write_log("OSS Statistics", logfile);
+    	write_log("Total Requests Granted:\t\t\t" + int2str(count_allocated), logfile);
+    	write_log("Requests Granted After Wait:\t\t" + int2str(count_wait), logfile);
+    	write_log("Processes Killed By Deadlock:\t\t" + int2str(count_deadlocked), logfile);
+    	write_log("Processes Die Naturally:\t\t" + int2str(count_died_nat), logfile);
+    	write_log("Times Deadlock Ran:\t\t\t" + int2str(count_deadlock_runs), logfile);
 
 		if(count_allocated > 0)
 		{
 			string deadlock_percent = (float)count_deadlocked/(float)count_allocated*100.0f;
-			log_message("Average percent of deadlock:\t\t\t" + deadlock_percent, logfile);
+			write_log("Average percent of deadlock:\t\t\t" + deadlock_percent, logfile);
 		}
 
 		s.Signal();
