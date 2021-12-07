@@ -27,12 +27,14 @@ using namespace std;
 
 
 
+
 volatile sig_atomic_t sig_int_flag = 0;
 
 void signal_handler(int sig)
 {
 	sig_int_flag = 1;
 }
+
 
 
 
@@ -427,8 +429,8 @@ int oss(string logfile, bool verbose_mode){
 								write_log("OSS ", sys_info->clock_seconds,
                                 			sys_info->clock_nanoseconds,
                                 			" Process released " +
-                                            int2str(msg.proc_index) + ":" +
-                                            int2str(msg.action) + int2str(msg.proc_pid), msg.proc_index, logfile);
+                                        	int2str(msg.proc_index) + ":" +
+                                        	 int2str(msg.action) + int2str(msg.proc_pid), msg.proc_index, logfile);
 								s.Signal();
 
 							}
@@ -510,7 +512,7 @@ int oss(string logfile, bool verbose_mode){
 						s.Signal();
 
 						count_deadlocked++;
-						kill(user_procs[deadlocked].pid, SIGQUIT);
+						kill(user_procs[deadlocked].pid, SIGQUIT); // 
 						bv.set_bit(deadlocked, false);
 					}
 				}
@@ -562,6 +564,8 @@ int oss(string logfile, bool verbose_mode){
 	}
 
 }
+
+/* generate child processes */
 
 int spawn_process(string proc, string file, int arr)
 {
