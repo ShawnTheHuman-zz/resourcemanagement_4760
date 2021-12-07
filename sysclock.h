@@ -25,7 +25,7 @@
 #include <sys/msg.h> 
 #include <string.h>
 #include <stdarg.h>
-#include <assert.h>
+#include <cassert.h>
 
 using namespace std;
 

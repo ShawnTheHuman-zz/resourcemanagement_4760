@@ -45,7 +45,7 @@ bool deadlock ( const int * available, const int m, const int n, const int * req
 		if ( req_lt_avail( request, work, p, m) )
 		{
 			finish[p] = true;
-			for int i( 0 ); i < m; i++)
+			for ( int i( 0 ); i < m; i++)
 				work[i] += allocated[p*m+i];
 
 			p = -1;

@@ -17,7 +17,7 @@
 #include <sys/msg.h> 
 #include <string.h>
 #include <stdarg.h>
-#include <assert.h>
+#include <cassert.h>
 #include <sys/sem.h>
 #include <sys/stat.h>
 

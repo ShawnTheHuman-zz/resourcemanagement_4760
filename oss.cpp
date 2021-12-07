@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
+#include <list>
 #include "sysclock.h"
 #include "bitvector.h"
 #include "oss.h"
@@ -120,9 +121,9 @@ int oss(string logfile, bool verbose_mode){
 	struct tm * cur_time = localtime( &sec_start );
 
 	if(VerboseMode)
-		print_log("Verbose Mode: ON", logfile);
+		write_log("Verbose Mode: ON", logfile);
 	else
-		print_log("Verbose Mode: OFF", logfile);	
+		write_log("Verbose Mode: OFF", logfile);	
 
 
 	bitvector bv(MAX_PROCESSES);
@@ -143,7 +144,7 @@ int oss(string logfile, bool verbose_mode){
 	int count_died_nat = 0;
 
 	
-	semaphore s(key_mutex, true, 1)
+	Semaphore s(key_mutex, true, 1)
 
 	if(!s.is_init())
 	{
@@ -169,7 +170,7 @@ int oss(string logfile, bool verbose_mode){
 	}
 
 	
-	shm_addr = ( char* )shmat( shmid, NULL, 0 );
+	shm_addr = ( char* )shmat( shm_id, NULL, 0 );
 	if ( !shm_addr )
 	{
 		perror( "ERROR: OSS: error attching memory" );
@@ -196,7 +197,7 @@ int oss(string logfile, bool verbose_mode){
 	for( int i = 0; i < MAX_RESOUR && !shutdown; i++ )
 	{
 	
-		if( randprob( 0.20f ) )
+		if( rand_prob( 0.20f ) )
 		{
 			sys_info->available_matrix[i] = res_des[i].total_resource_count = get_random(2, 10);
 
@@ -216,12 +217,12 @@ int oss(string logfile, bool verbose_mode){
 		while(!shutdown)
 		{
 			s.Wait();
-			sys_info->clock_nanosecondsseconds += get_random(10, 10000);
+			sys_info->clock_nanoseconds += get_random(10, 10000);
 			
-			if(sys_info->clock_nanosecondsseconds > 100000000 )
+			if(sys_info->clock_nanoseconds > 100000000 )
 			{
-				sys_info->clock_seconds += floor(sys_info->clock_nanosecondsseconds/1000000000);
-				sys_info->clock_nanosecondsseconds -= 10000000;
+				sys_info->clock_seconds += floor(sys_info->clock_nanoseconds/1000000000);
+				sys_info->clock_nanoseconds -= 10000000;
 			}
 			s.Signal();
 			
@@ -253,7 +254,7 @@ int oss(string logfile, bool verbose_mode){
 
 						write_log("printing", logfile);
 
-						sys_info->clock_nanosecondsseconds += get_random(1000, 500000);
+						sys_info->clock_nanoseconds += get_random(1000, 500000);
 
 						s.Signal(); 
 
