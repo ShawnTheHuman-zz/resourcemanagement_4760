@@ -409,7 +409,7 @@ int oss(string logfile, bool verbose_mode){
 								{
 									s.Wait();
 									
-									write_log("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "RESOURCE UNAVAILABLE: " + int2str(msg.proc_index) " : " + int2str(msg.action),msg.proc_pid, msg.proc_index logfile);
+									write_log("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "RESOURCE UNAVAILABLE: " + 
 									int2str(msg.proc_index) + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
 				
 									s.Signal();
