@@ -21,7 +21,6 @@
 static void usage(std::string);
 
 
-
 using namespace std;
 
 
