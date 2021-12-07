@@ -385,8 +385,8 @@ int oss(string logfile, bool verbose_mode){
 								log_message("OSS ", sys_info->clock_seconds, 
 										    sys_info->clock_nanoseconds, 
 										    " Process created " + 
-										    (msg.proc_index).c_str() + ":" + 
-										   (msg.action).c_str() + msg.proc_pid, msg.proc_index, logfile);
+										    msg.proc_index + ":" + 
+										   msg.action + msg.proc_pid, msg.proc_index, logfile);
 
 								
 								if( verbose_mode && count_allocated%20 == 0 )
@@ -433,8 +433,8 @@ int oss(string logfile, bool verbose_mode){
 								log_message("OSS ", sys_info->clock_seconds,
                                 			sys_info->clock_nanoseconds,
                                 			" Process released " +
-                                            (msg.proc_index).c_str() + ":" +
-                                            (msg.action).c_str() + msg.proc_pid, msg.proc_index, logfile);
+                                            msg.proc_index + ":" +
+                                            msg.action + msg.proc_pid, msg.proc_index, logfile);
 								s.Signal();
 
 							}
