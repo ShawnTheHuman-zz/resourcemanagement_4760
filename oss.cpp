@@ -125,7 +125,6 @@ int oss(string logfile, bool verbose_mode){
 	else
 		write_log("Verbose Mode: OFF", logfile);	
 
-
 	bitvector bv(MAX_PROCESSES);
 
 	signal(SIGINT, signal_handler);
