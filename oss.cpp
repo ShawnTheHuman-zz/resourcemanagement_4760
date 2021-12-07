@@ -468,9 +468,11 @@ int oss(string logfile, bool verbose_mode){
 					{
 						int waiting_proc = res_des[i].wait_queue.front();
 
-						assert( !res_des[i].wait_queue.erase(res_des[i].wait_queue.begin());
-						res_des[i].allocated_procs.push_back(waiting_proc);
+						assert( !res_des[i].wait_queue.empty());
+						res_des[i].wait_queue.erase(res_des[i].wait_queue.begin());
 
+
+						res_des[i].allocated_procs.push_back(waiting_proc);
 						count_allocated++;
 
 						int index = -1;
