@@ -101,5 +101,8 @@ std::string print_time(const char* str);
 std::string string_format(const std::string fmt, ...);
 void write_log(std::string& log, std::string filename);
 void write_log( std::string sys, int sec, int nano, std::string text, int pid, int index, std::string filename );
+int get_random(int MinVal, int MaxVal);
+bool rand_prob(float);
+
 
 #endif

@@ -144,7 +144,7 @@ int oss(string filename, bool verbose_mode){
 	
 	semaphore s(key_mutex, true, 1)
 
-	if(!s.in_init())
+	if(!s.is_init())
 	{
 		perror("ERROR: OSS: unable to create semaphore");
 		exit(EXIT_FAILURE);
@@ -160,7 +160,7 @@ int oss(string filename, bool verbose_mode){
 	int mem_size = sizeof(struct SysClock) + 
 		      (sizeof(struct UserProcesses) * MAX_PROCESSES) + 
 		      (sizeof(struct ResourceDescriptors) * MAX_RESOURCES);
-	shmid_id = shmget( shm_key, mem_size, IPC_CREAT | IPC_EXCL | 0660 );
+	shm_id = shmget( shm_key, mem_size, IPC_CREAT | IPC_EXCL | 0660 );
 	if ( shm_id == -1 )
 	{	
 		perror("ERROR: OSS: unable to allocate memory");

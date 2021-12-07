@@ -167,3 +167,16 @@ void write_log( std::string sys, int sec, int nano, std::string text, int pid, i
 		perror("ERROR writing to file");
 	}
 }
+
+int get_random(int MinVal, int MaxVal)
+{
+    int range = MaxVal-MinVal+1 ;
+    return rand()%range + MinVal ;
+}
+
+
+bool rand_prob(float prob)
+{
+    float fVal = (rand()%1000)/10.0f;
+    return fVal < (prob * 100.0f);
+}
