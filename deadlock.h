@@ -16,7 +16,7 @@ bool req_lt_avail ( const int * req,  const int * avail, const int pnum, const i
 {
 	int i ( 0 );
 	for ( ; i < num_res; i++ )
-		if ( req[pnum*num_res+i > avail[i] )
+		if ( req[pnum*num_res+i] > avail[i] )
 			break;
 
 	return ( i == num_res );
