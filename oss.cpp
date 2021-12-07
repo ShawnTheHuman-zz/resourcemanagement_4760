@@ -321,11 +321,14 @@ int oss(string logfile, bool verbose_mode){
 
 					}
 				}
-			}else if (WIFSIGNALED(wstatus) && wait_pid > 0) {
+			}
+			else if (WIFSIGNALED(wstatus) && wait_pid > 0) {
 				cout << wait_pid << " killed by signal " << WTERMSIG(wstatus) << endl;
-			}else if (WIFSTOPPED(wstatus) && wait_pid > 0) {
+			}
+			else if (WIFSTOPPED(wstatus) && wait_pid > 0) {
 				cout << wait_pid << " stopped by signal " << WTERMSIG(wstatus) << endl;
-			}else if (WIFSIGNALED(wstatus) && wait_pid > 0) {
+			}
+			else if (WIFSIGNALED(wstatus) && wait_pid > 0) {
 			}
 			
 
@@ -365,7 +368,8 @@ int oss(string logfile, bool verbose_mode){
 						msg.type = msg.proc_pid;
 						
 						int n = msgsnd( msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
-					}	
+					}
+					
 					else if( msg.action == REQ_CREATE)
 					{
 						count_requested++;
@@ -520,7 +524,7 @@ int oss(string logfile, bool verbose_mode){
 						bv.set_bit(deadlocked, false);
 					}
 				}
-			
+			}
 		}
 		catch(...){
 			cout << "fatal error occured. aborting." << endl;
