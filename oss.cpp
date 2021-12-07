@@ -306,7 +306,7 @@ int oss(string logfile, bool verbose_mode){
 					if( user_procs[i].pid == wait_pid )
 					{
 						user_procs[i].pid = 0;
-						bv.set_bit(i, false)
+						bv.set_bit(i, false);
 
 						s.Wait();
 
@@ -502,7 +502,7 @@ int oss(string logfile, bool verbose_mode){
 					deadlock_timer++;
 					count_deadlock_runs++;
 
-					int deadlocked = deadlock(sys_info->available_matrix, MAX_PROCESSES, sys_info->request_matrix, sys_info->allocated_matrix);
+					int deadlocked = deadlock(sys_info->available_matrix, MAX_PROCESSES, MAX_RESOURCES, sys_info->request_matrix, sys_info->allocated_matrix);
 
 					if(deadlocked > -1)
 					{
@@ -584,7 +584,7 @@ int spawn_process(string proc, string file, int arr)
 		else
 		{
 			string array_string = int2str(array_string);
-			execl(proc.c_str(), proc.c_str(), array_string.c_str(), file.c_str(), "50", (char*)0)
+			execl(proc.c_str(), proc.c_str(), array_string.c_str(), file.c_str(), "50", (char*)0);
 		}
 		exit(EXIT_SUCCESS);
 	}

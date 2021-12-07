@@ -116,6 +116,7 @@ const key_t mutex_key = 0x563535;
 
 
 std::string int2str( const int val );
+std::string float2str( const float val );
 void print_array( const int* arr, const int arrsize, const int cols );
 std::string array_string( const int* arr, const int arrsize, const int cols );
 int get_array_value(const int* array, const int row, const int col, const int total_cols);
