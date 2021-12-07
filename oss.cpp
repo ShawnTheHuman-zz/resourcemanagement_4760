@@ -27,7 +27,7 @@ using namespace std;
 
 
 
-
+/* signal handler */
 volatile sig_atomic_t sig_int_flag = 0;
 
 void signal_handler(int sig)
@@ -94,7 +94,7 @@ static void usage(std::string name)
 
 }
 
-
+/* main simulation driver */
 int oss(string logfile, bool verbose_mode){
 
 	struct SysInfo* sys_info;
@@ -133,6 +133,7 @@ int oss(string logfile, bool verbose_mode){
 	bool killed = false;
 	bool shutdown = false;
 
+	/* various counters for different processes and deadlock states  */
 	int process_count = 0;
 	int total_time = 0;
 	int count_requested = 0;
@@ -143,7 +144,7 @@ int oss(string logfile, bool verbose_mode){
 	int count_deadlock_runs = 0;
 	int count_died_nat = 0;
 
-	
+	/* create semaphore */
 	Semaphore s(mutex_key, true, 1);
 
 	if(!s.is_init())
