@@ -135,7 +135,7 @@ std::string string_format(const std::string fmt, ...)
 
 
 
-void write_log(std::string& log, std::string filename)
+void write_log(std::string log, std::string filename)
 {
 	std::ofstream log_file (filename.c_str(), std::ofstream::out | std::ofstream::app);
 	if(log_file.is_open())

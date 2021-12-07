@@ -1,8 +1,8 @@
 #ifndef SYSCLOCK_H
 #define SYSCLOCK_H
 
-#define  PROCESSES_MAX 40
-#define  RESOURCES_MAX 18
+#define  MAX_PROCESSES 40
+#define  MAX_RESOURCES 18
 
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -42,9 +42,9 @@ struct SysInfo {
 	int clock_nanoseconds;
 
 
-	int allocated_matrix[PROCESSES_MAX * RESOURCES_MAX];
-	int available_matrix[RESOURCES_MAX];
-	int request_matrix[PROCESSES_MAX * RESOURCES_MAX];
+	int allocated_matrix[MAX_PROCESSES * MAX_RESOURCES];
+	int available_matrix[MAX_RESOURCES];
+	int request_matrix[MAX_PROCESSES * MAX_RESOURCES];
 
 
 };

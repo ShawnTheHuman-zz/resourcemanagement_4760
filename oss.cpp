@@ -119,7 +119,7 @@ int oss(string logfile, bool verbose_mode){
 
 	struct tm * cur_time = localtime( &sec_start );
 
-	if(VerboseMode)
+	if(verbose_mode)
 		write_log("Verbose Mode: ON", logfile);
 	else
 		write_log("Verbose Mode: OFF", logfile);	
@@ -143,7 +143,7 @@ int oss(string logfile, bool verbose_mode){
 	int count_died_nat = 0;
 
 	
-	Semaphore s(key_mutex, true, 1)
+	Semaphore s(mutex_key, true, 1)
 
 	if(!s.is_init())
 	{
@@ -151,7 +151,7 @@ int oss(string logfile, bool verbose_mode){
 		exit(EXIT_FAILURE);
 	}
 
-	int msgid = (key_message_queue, IPC_CREAT | 0666);
+	int msgid = (message_queue_key, IPC_CREAT | 0666);
 	if (msgid == -1)
 	{
 		perror("ERROR: OSS: unable to create message");
@@ -193,7 +193,7 @@ int oss(string logfile, bool verbose_mode){
 	memset(sys_info->allocated_matrix, 0, sizeof(sys_info->allocated_matrix));
 	
 
-	for( int i = 0; i < MAX_RESOUR && !shutdown; i++ )
+	for( int i = 0; i < MAX_RESOURCES && !shutdown; i++ )
 	{
 	
 		if( rand_prob( 0.20f ) )
@@ -239,7 +239,7 @@ int oss(string logfile, bool verbose_mode){
 	
 						int newpid = spawn_process(child, logfile, i);
 
-						 user_processes[i].pid = newpid;
+						 user_procs[i].pid = newpid;
 
 
 						bv.set_bit(i, true);
@@ -476,7 +476,7 @@ int oss(string logfile, bool verbose_mode){
 						int index = -1;
 						for(int j(0);j < MAX_PROCESSES; j++)
 						{
-							if(user_processes[j].pid == waiting_proc)
+							if(user_procs[j].pid == waiting_proc)
 								index = j;
 						}
 						if(index > -1)
@@ -515,7 +515,7 @@ int oss(string logfile, bool verbose_mode){
 						s.Signal();
 
 						count_deadlocked++;
-						kill(user_processes[deadlocked].pid, SIGQUIT);
+						kill(user_procs[deadlocked].pid, SIGQUIT);
 						bv.set_bit(deadlocked, false);
 					}
 				}
