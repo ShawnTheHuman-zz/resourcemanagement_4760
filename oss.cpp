@@ -521,7 +521,6 @@ int oss(string logfile, bool verbose_mode){
 						bv.set_bit(deadlocked, false);
 					}
 				}
-
 			}
 		}
 		catch(...){
