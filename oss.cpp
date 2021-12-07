@@ -391,7 +391,7 @@ int oss(string logfile, bool verbose_mode){
 										    sys_info->clock_nanoseconds, 
 										    " Process created " + 
 										    int2str(msg.proc_index) + ":" + 
-										  	int2str(msg.action) + int2str(msg.proc_pid),msg.proc_id, msg.proc_index, logfile);
+										  	int2str(msg.action) + int2str(msg.proc_pid),msg.proc_pid, msg.proc_index, logfile);
 
 								
 								if( verbose_mode && count_allocated%20 == 0 )
@@ -575,7 +575,7 @@ int oss(string logfile, bool verbose_mode){
 		return EXIT_SUCCESS;
 	
 	
-	}
+	
 
 }
 
