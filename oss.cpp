@@ -442,6 +442,8 @@ int oss(string logfile, bool verbose_mode){
 								s.Signal();
 
 							}
+							
+
                                                         for(vector<int>::iterator item = res_des[msg.res_index].allocated_procs.begin(); item != res_des[msg.res_index].allocated_procs.end(); ++item)
                                                         {
                                                                 if( *item == msg.proc_pid )
@@ -461,6 +463,8 @@ int oss(string logfile, bool verbose_mode){
                                                         msg.type = msg.proc_pid;
 
                                                         int n = msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
+							
+						
 						}
 
 					}
