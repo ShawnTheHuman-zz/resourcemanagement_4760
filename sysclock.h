@@ -49,7 +49,7 @@ struct SysInfo {
 
 };
 
-struct ResourceDescriptor {
+struct ResourceDescriptors {
 	std::vector<int> allocated_procs;
 	std::vector<int> wait_queue;
 
