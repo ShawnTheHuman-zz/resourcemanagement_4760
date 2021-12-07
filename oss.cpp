@@ -546,10 +546,10 @@ int oss(string logfile, bool verbose_mode){
 		msgctl(msgid,IPC_RMID,NULL);
 
 		write_log("________________________________\n", logfile);
-    	write_log("OSS Statistics", logfile);
-    	write_log("Total Requests Granted:\t\t\t" + int2str(count_allocated), logfile);
-    	write_log("Requests Granted After Wait:\t\t" + int2str(count_wait), logfile);
-    	write_log("Processes Killed By Deadlock:\t\t" + int2str(count_deadlocked), logfile);
+		write_log("OSS Statistics: ", logfile);
+		write_log("Total Requests Granted: \t\t\t" + int2str(count_allocated), logfile);
+    	write_log("Requests Granted After Wait: \t\t" + int2str(count_wait), logfile);
+    	write_log("Processes Killed By Deadlock: \t\t" + int2str(count_deadlocked), logfile);
     	write_log("Processes Die Naturally:\t\t" + int2str(count_died_nat), logfile);
     	write_log("Times Deadlock Ran:\t\t\t" + int2str(count_deadlock_runs), logfile);
 
@@ -592,6 +592,7 @@ int spawn_process(string proc, string file, int arr)
 		}
 		exit(EXIT_SUCCESS);
 	}
+
 	else 
 		return pid;
 
