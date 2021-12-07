@@ -93,11 +93,11 @@ static void usage(std::string name)
 }
 
 
-int oss(string filename, bool verbose_mode){
+int oss(string logfile, bool verbose_mode){
 
 	struct SysInfo* sys_info;
 	struct UserProcesses* user_procs;
-	struct ResourceDescriptors* res_des;
+	struct ResourceDescriptors* res_des = new ResourceDescriptors();
 
 	int wstatus;
 	long next_start_time = 0;
@@ -419,7 +419,7 @@ int oss(string filename, bool verbose_mode){
 
 								count_wait++;
 
-								int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES);
+								int new_val = get_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES);
 
 								set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES, new_val + 1);
 							}
@@ -445,7 +445,7 @@ int oss(string filename, bool verbose_mode){
                                                                     res_des[i].allocated_procs.erase(item);
                                                                     count_released++;
 
-																	int new_val = get_array(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
+																	int new_val = get_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
 												);
 
 	                                                                set_array_value(sys_info->request_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES
@@ -490,10 +490,10 @@ int oss(string filename, bool verbose_mode){
                                 			" Process allocated after wait  " + int2str(waiting_proc), waiting_proc, waiting_proc, logfile);
 								s.Signal();
 							}
-							int new_val = get_array(sys_info->allocated_matrix, index, i, MAX_RESOURCES);
+							int new_val = get_array_value(sys_info->allocated_matrix, index, i, MAX_RESOURCES);
 
 							set_array_value(sys_info->allocated_matrix, index, i, MAX_RESOURCES, new_val + 1);
-							new_val = get_array(sys_info->request_matrix, index, i, MAX_RESOURCES);
+							new_val = get_array_value(sys_info->request_matrix, index, i, MAX_RESOURCES);
 							set_array_value(sys_info->allocated_matrix, index, i, MAX_RESOURCES, new_val - 1);
 						}
 						msg.action = OK;

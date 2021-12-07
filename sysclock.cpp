@@ -21,6 +21,7 @@
 #include <sys/sem.h>
 #include <sys/stat.h>
 
+/* for Semaphore options  */
 #define PERMS (S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
 
 
