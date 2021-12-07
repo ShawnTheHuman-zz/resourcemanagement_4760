@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include "sysclock.h"
+#include "bitvector.h"
 #include "oss.h"
 #include "deadlock.h"
 
@@ -245,7 +246,6 @@ int oss(string filename, bool verbose_mode){
 						
 						process_count++;
 
-
 						next_start_time += get_random(1, 500);
 
 
@@ -267,10 +267,10 @@ int oss(string filename, bool verbose_mode){
 
 				for( int i = 0; i < MAX_PROCESSES; i++)
 				{
-					if(bv.get_bits(i))
+					if(bv.get_bit(i))
 					{
 						kill(UserProcesses[i].pid, SIGQUIT);	
-						bv.set_bits( i, false );
+						bv.set_bit( i, false );
 
 						count_died_nat++;
 

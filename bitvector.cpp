@@ -37,7 +37,7 @@ bitvector::~bitvector()
 }
 
 // gets bitvector at location
-void bitvector::getBits(int addr)
+void bitvector::get_bit(int addr)
 {
 	if( addr < 0 || addr >= _size * 8)
 		return 0;
@@ -47,7 +47,7 @@ void bitvector::getBits(int addr)
 
 }
 // sets bitvector at location
-void bitvector::setBits(int addr, bool value)
+void bitvector::set_bit(int addr, bool value)
 {
 	if(addr < 0 || addr >= _size*8)
 		return;

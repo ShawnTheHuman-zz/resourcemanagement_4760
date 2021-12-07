@@ -9,6 +9,7 @@
 #include <iostream>
 #include <unistd.h>
 #include "sysclock.h"
+#include "bitvector.h"
 #include <fstream>
 #include <stdlib.h>
 #include <time.h>

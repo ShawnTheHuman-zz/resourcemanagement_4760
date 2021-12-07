@@ -23,8 +23,8 @@ class bitvector
 		~bitvector();
 
 
-		void setBits(int, bool);
-		bool getBits(int);
+		void set_bit(int, bool);
+		bool get_bit(int);
 	
 
 
