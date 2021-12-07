@@ -214,8 +214,7 @@ int oss(string logfile, bool verbose_mode){
 
 	}
 	
-	try
-	{
+	// try{
 
 
 		while(!shutdown)
@@ -531,9 +530,10 @@ int oss(string logfile, bool verbose_mode){
 			}
 		}
 		
-		catch(...){
-			cout << "fatal error occured. aborting." << endl;
-		}
+		// catch(...)
+		// {
+		// 	cout << "fatal error occured. aborting." << endl;
+		// }
 
 		total_time = sys_info->clock_seconds;
 
