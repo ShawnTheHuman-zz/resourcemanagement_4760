@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <list>
-#include <cassert>
+#include <assert.h>
 #include "sysclock.h"
 #include "bitvector.h"
 #include "oss.h"
