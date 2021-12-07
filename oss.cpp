@@ -262,7 +262,7 @@ int oss(string logfile, bool verbose_mode){
 				}
 			}
 
-			if (( sig_int_flag || (time(NULL) - sec_start) > max_seconds) && !killed)
+			if (( sig_int_flag || (time(NULL) - sec_start) > max_runtime) && !killed)
 			{
 				killed = true;
 
@@ -330,7 +330,7 @@ int oss(string logfile, bool verbose_mode){
 				if( msgrcv(msgid, (void *) &msg, sizeof(message), OSS_MQ_TYPE, IPC_NOWAIT) > 0 )
 				{
 					s.Wait();
-					write_log();
+					write_log("OSS: ",sys_info->clock_seconds, sys_info->clock_nanoseconds, " recieved message from " + int2str(msg.proc_index) " : " + int2str(msg.action),msg.proc_pid, msg.proc_index logfile);
 
 					s.Signal();
 
@@ -352,7 +352,7 @@ int oss(string logfile, bool verbose_mode){
 						}
 						s.Wait();
 
-						write_log(); // add later
+						write_log("OSS: ",sys_info->clock_seconds, sys_info->clock_nanoseconds, " recieved shutdown message from " + int2str(msg.proc_index) " : " + int2str(msg.action),msg.proc_pid, msg.proc_index logfile); // add later
 						
 						s.Signal();
 
@@ -376,7 +376,7 @@ int oss(string logfile, bool verbose_mode){
 								count_allocated++;
 
 								int new_arr = get_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES);
-								set_array(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES, new_arr + 1);
+								set_array_value(sys_info->allocated_matrix, msg.proc_index, msg.res_index, MAX_RESOURCES, new_arr + 1);
 
 								s.Wait();
 								
