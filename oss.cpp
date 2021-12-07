@@ -162,7 +162,7 @@ int oss(string logfile, bool verbose_mode){
 	}
 	
 	/* get size necessary for shared memory */
-	int mem_size = sizeof(struct SysClock) + 
+	int mem_size = sizeof(struct SysInfo) + 
 		      (sizeof(struct UserProcesses) * MAX_PROCESSES) + 
 		      (sizeof(struct ResourceDescriptors) * MAX_RESOURCES);
 			  
@@ -184,7 +184,7 @@ int oss(string logfile, bool verbose_mode){
 
 	sys_info = ( struct SysInfo* ) ( shm_addr );
 
-	user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysClock ) );
+	user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysInfo ) );
 
 	res_des = (struct ResourceDescriptors*)(user_procs)+(sizeof( struct UserProcesses)*MAX_PROCESSES );
 
