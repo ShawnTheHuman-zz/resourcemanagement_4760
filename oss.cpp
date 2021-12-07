@@ -97,7 +97,7 @@ int oss(string logfile, bool verbose_mode){
 
 	struct SysInfo* sys_info;
 	struct UserProcesses* user_procs;
-	struct ResourceDescriptors* res_des = new ResourceDescriptors();
+	struct ResourceDescriptors* res_des;
 
 	int wstatus;
 	long next_start_time = 0;
@@ -181,7 +181,7 @@ int oss(string logfile, bool verbose_mode){
 
 	user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysClock ) );
 
-	res_des = ( struct ResourceDescriptors* ) ( user_procs ) + ( sizeof( struct UserProcesses ) * MAX_PROCESSES );
+	res_des = (struct ResourceDescriptors*)(user_procs)+(sizeof( struct UserProcesses)*MAX_PROCESSES );
 
 	int child_index = -1;
 
