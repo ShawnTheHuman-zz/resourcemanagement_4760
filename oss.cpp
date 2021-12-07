@@ -530,6 +530,7 @@ int oss(string logfile, bool verbose_mode){
 				}
 			}
 		}
+		
 		catch(...){
 			cout << "fatal error occured. aborting." << endl;
 		}
@@ -573,7 +574,7 @@ int oss(string logfile, bool verbose_mode){
 
 		return EXIT_SUCCESS;
 	
-	}
+	
 
 
 }
