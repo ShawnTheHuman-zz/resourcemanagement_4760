@@ -36,8 +36,6 @@ const int max_runtime = 3; // seconds
 const char* child = "./user_proc";
 
 
-
-
 struct SysInfo {
 	
 	int clock_seconds;
