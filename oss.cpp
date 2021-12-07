@@ -406,7 +406,7 @@ int oss(string logfile, bool verbose_mode){
 									s.Wait();
 									
 									write_log("OSS ", sys_info->clock_seconds, sys_info->clock_nanoseconds, "RESOURCE UNAVAILABLE: " 
-									(msg.proc_index).c_string() + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
+									int2str(msg.proc_index) + " putting process to sleep ", msg.proc_pid, msg.res_index, logfile);
 				
 									s.Signal();
 								}
