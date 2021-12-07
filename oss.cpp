@@ -334,7 +334,7 @@ int oss(string logfile, bool verbose_mode){
 				if( msgrcv(msgid, (void *) &msg, sizeof(message), OSS_MQ_TYPE, IPC_NOWAIT) > 0 )
 				{
 					s.Wait();
-					write_log("OSS: ",sys_info->clock_seconds, sys_info->clock_nanoseconds, " recieved message from " + int2str(msg.proc_index) " : " + int2str(msg.action),msg.proc_pid, msg.proc_index logfile);
+					write_log("OSS: ",sys_info->clock_seconds, sys_info->clock_nanoseconds, " recieved message from " + int2str(msg.proc_index) + " : " + int2str(msg.action),msg.proc_pid, msg.proc_index, logfile);
 
 					s.Signal();
 
@@ -356,7 +356,7 @@ int oss(string logfile, bool verbose_mode){
 						}
 						s.Wait();
 
-						write_log("OSS: ",sys_info->clock_seconds, sys_info->clock_nanoseconds, " recieved shutdown message from " + int2str(msg.proc_index) " : " + int2str(msg.action),msg.proc_pid, msg.proc_index logfile); // add later
+						write_log("OSS: ",sys_info->clock_seconds, sys_info->clock_nanoseconds, " recieved shutdown message from " + int2str(msg.proc_index) + " : " + int2str(msg.action),msg.proc_pid, msg.proc_index, logfile); // add later
 						
 						s.Signal();
 
