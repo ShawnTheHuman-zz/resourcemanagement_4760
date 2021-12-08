@@ -5,7 +5,7 @@
 #include <sys/sem.h>
 
 
-class productSemaphores
+class Semaphore
 {
     private:
     
@@ -16,10 +16,10 @@ class productSemaphores
 
     public:
 
-    productSemaphores(key_t, bool, int = 1);
-    ~productSemaphores();
+    Semaphore(key_t, bool, int = 1);
+    ~Semaphore();
 
-    // Check if properly setup
+    // Check if initialized properly
     bool is_init() { return _initialized; };
 
     // Semaphore Wait
