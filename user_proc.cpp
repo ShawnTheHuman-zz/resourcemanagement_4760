@@ -28,8 +28,6 @@ void signal_handler(int sig)
 	sig_int_flag = 1;
 }
 
-
-
 int main(int argc, char* argv[])
 {
 
