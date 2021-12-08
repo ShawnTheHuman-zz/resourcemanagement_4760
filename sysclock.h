@@ -65,12 +65,12 @@ struct UserProcesses {
 };
 
 
-const key_t shm_key = 0x382401;
+const key_t shm_key = ftok(".",'c');
 int shm_id;
 char* shm_addr;
 
 
-const key_t message_queue_key = 0x999444;
+const key_t message_queue_key = ftok(".",'c');
 
 
 struct message {
