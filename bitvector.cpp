@@ -59,7 +59,7 @@ void bitvector::set_bit(int addr, bool value)
 	
 	else
 	{
-		_usageArray[addr/8] &= ~(1 << 7 - (addr%8));
+		_usageArray[addr/8] &= ~(1 << (7 - (addr%8)));
 	}
 
 }
