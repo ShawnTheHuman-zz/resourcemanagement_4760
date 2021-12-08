@@ -51,14 +51,14 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signal_handler);
 
-    semaphore s(key_mutex, false);
+    Semaphore s(key_mutex, false);
     if(!is_init())
     {
         perror("ERROR: semaphore error");
         exit(EXIT_FAILURE);
     }
 
-     const pid_t pid = getpid();
+    const pid_t pid = getpid();
 
     srand(time(0) ^ pid);
 
@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
     shmctl(shm_id, IPC_STAT, &shmid_ds);
     size_t size = shmid_ds.shm_segsz;
 
-	shm_id = shmget( shm_key, mem_size, IPC_CREAT | IPC_EXCL | 0660 );
+	shm_id = shmget( shm_key, size, IPC_CREAT | IPC_EXCL | 0660 );
 	if ( shm_id == -1 )
 	{	
 		perror("ERROR: OSS: unable to allocate memory");
