@@ -17,6 +17,7 @@
 #include "bitvector.h"
 #include "oss.h"
 #include "deadlock.h"
+#include "semaphore.h"
 
 
 static void usage(std::string);

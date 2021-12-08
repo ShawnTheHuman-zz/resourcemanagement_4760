@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "deadlock.h"
+#include "semaphore.h"
 
 using namespace std;
 
@@ -51,7 +52,7 @@ int main(int argc, char* argv[])
     signal(SIGINT, signal_handler);
 
     semaphore s(key_mutex, false);
-    if(!is_initialized())
+    if(!is_init())
     {
         perror("ERROR: semaphore error");
         exit(EXIT_FAILURE);

@@ -42,7 +42,7 @@ std::string int2str( const int val )
 
 std::string float2str( const float val )
 {
-	int len = snprintf( NULL, 0, "%d", val );
+	int len = snprintf( NULL, 0, "%f", val );
 	char* sDep = (char*)malloc( len + 1 );
 	snprintf( sDep, len + 1, "%0.4f", val);
 	std::string new_val = sDep;
@@ -151,7 +151,7 @@ void write_log(std::string input, std::string filename)
 	std::cout << input.c_str() << std::endl;
 
 
-    std::ofstream logFile (LogFileName.c_str(), 
+    std::ofstream logFile (filename.c_str(), 
             std::ofstream::out | std::ofstream::app);
     if (logFile.is_open())
     {
@@ -197,68 +197,5 @@ bool rand_prob(float prob)
 }
 
 
-/*
 
-	Semaphore definitions
-
-*/
-Semaphore::Semaphore(key_t key, bool Create, int Value)
-{
-    // If a valid key
-    if(key > 0)
-    {
-        // If Creating a new Key
-        if(Create)
-        {
-
-            _semid = semget(key, 1, PERMS | IPC_EXCL | IPC_CREAT);
-
-            // If successful, set it's value to Value
-            if (_semid > 0)
-            {
-                semctl(_semid, 0, SETVAL, Value);
-
-                _bCreator = true;
-                _initialized = true;
-            }
-        }
-        else
-        {
-
-            _semid = semget(key, 1, PERMS);
-
-            _bCreator = false;
-            if (_semid > 0)
-            {
-                // Set as properly initialized
-                _initialized = true;
-            }
-        }
-    }
-}
-
-Semaphore::~Semaphore()
-{
-    if(_bCreator && _initialized)
-    {
-        semctl(_semid, 0, IPC_RMID);
-
-    }
-}
-
-void Semaphore::Wait()
-{
-    structSemaBuf.sem_num = 0;
-    structSemaBuf.sem_op = -1;
-    structSemaBuf.sem_flg = 0;
-    semop(_semid, &structSemaBuf, 1);
-}
-
-void Semaphore::Signal() 
-{
-    structSemaBuf.sem_num = 0;
-    structSemaBuf.sem_op = 1;
-    structSemaBuf.sem_flg = 0;
-    semop(_semid, &structSemaBuf, 1);
-}
 

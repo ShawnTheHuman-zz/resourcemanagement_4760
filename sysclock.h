@@ -83,31 +83,6 @@ struct message {
 
 } msg;
 
-class Semaphore
-{
-    private:
-    
-        bool _bCreator;
-        int _semid;
-        bool _initialized;
-        struct sembuf structSemaBuf;
-
-    public:
-
-    Semaphore(key_t, bool, int = 1);
-    ~Semaphore();
-
-    // Check if properly setup
-    bool is_init() { return _initialized; };
-
-    // Semaphore Wait
-    void Wait();
-
-    // Semaphore Signal
-    void Signal();    
-
-};
-
 
 const long OSS_MQ_TYPE = 1000;
 
