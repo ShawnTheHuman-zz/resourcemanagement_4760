@@ -6,20 +6,29 @@ CC      = g++
 CFLAGS  = -std=c++11 -g -Wall -Wshadow
 DEPS = sysclock.h user_proc.cpp  oss.cpp sysclock.cpp bitvector.cpp bitvector.h deadlock.h oss.h
 OBJ = oss.o user_proc.o sysclock.o
-EXEC = oss user_proc
-
-all: $(EXEC)
 
 
-$(EXEC): %: %.o
-	$(CC) $(CFLAGS) -o $@ $^
+EXEC1 := oss
+SRC1 := sysclock.cpp bitvector.cpp oss.cpp
+OBJ1 := $(patsubst %.cpp, %.o, $(SRC1))	
 
-$(OBJ): %.o: %.cpp $(DEPS)
-	$(CC)  $(CLAGS) -o $@ -c $<
+all: $(EXEC1)
+
+$(EXEC1): $(OBJ1)
+	$(CC) $(CFLAGS) -o $(EXEC1) $OBJ1
+
+EXEC2 := user_proc
+SRC2 := sysclock.cpp bitvector.cpp user_proc.cpp
+OBJ2 := $(patsubst %.cpp, %.o, $(SRC2))	
+
+all: $(EXEC2)
+
+$(EXEC2): $(OBJ2)
+	$(CC) $(CFLAGS) -o $(EXEC2) $(OBJ2)
 
 
 .PHONY: clean
 
 clean:
-	rm -f $(EXEC) *.o logfile
+	rm -f $(EXEC1) $(EXEC2) *.o logfile
 
