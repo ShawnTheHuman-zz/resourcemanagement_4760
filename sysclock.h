@@ -65,12 +65,12 @@ struct UserProcesses {
 };
 
 
-const key_t shm_key = ftok(".",'c');
+const key_t shm_key = ftok("./oss.h",'c');
 int shm_id;
 char* shm_addr;
 
 
-const key_t message_queue_key = ftok(".",'c');
+const key_t message_queue_key = ftok("./oss.cpp",'c');
 
 
 struct message {
@@ -87,7 +87,7 @@ struct message {
 const long OSS_MQ_TYPE = 1000;
 
 
-const key_t mutex_key = ftok(".",'c');
+const key_t mutex_key = ftok("./deadlock.h",'c');
 
 
 std::string int2str( const int val );
