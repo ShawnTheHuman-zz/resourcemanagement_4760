@@ -9,7 +9,7 @@ OBJ = oss.o user_proc.o sysclock.o
 
 
 EXEC1 := oss
-SRC1 := sysclock.cpp bitvector.cpp oss.cpp
+SRC1 := sysclock.cpp bitvector.cpp oss.cpp semaphore.cpp
 OBJ1 := $(patsubst %.cpp, %.o, $(SRC1))	
 
 all: $(EXEC1)
@@ -18,7 +18,7 @@ $(EXEC1): $(OBJ1)
 	$(CC) $(CFLAGS) -o $(EXEC1) $(OBJ1)
 
 EXEC2 := user_proc
-SRC2 := sysclock.cpp bitvector.cpp user_proc.cpp
+SRC2 := sysclock.cpp bitvector.cpp user_proc.cpp semaphore.cpp
 OBJ2 := $(patsubst %.cpp, %.o, $(SRC2))	
 
 all: $(EXEC2)
