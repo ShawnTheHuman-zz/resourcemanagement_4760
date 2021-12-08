@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
             int res = get_random(0, MAX_RESOURCES-1);
 
             s.Wait();
-            write_log("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " requesting resource " + res.c_str(), pid, next_proc, logfile);
+            write_log("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " requesting resource " + int2str(res), pid, next_proc, logfile);
             s.Signal();
 
             msg.type = OSS_MQ_TYPE;
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
                 int res_to_remove = get_random(0, owned_resources.size() - 1);
 
                 s.Wait();
-                log_message("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " requesting resource " + res.c_str(), pid, next_proc, logfile);
+                write_log("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " requesting resource " + res_to_remove.c_str(), pid, next_proc, logfile);
                 s.Signal();
 
                 msg.type = OSS_MQ_TYPE;
