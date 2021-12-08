@@ -51,8 +51,8 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signal_handler);
 
-    Semaphore s(key_mutex, false);
-    if(!is_init())
+    Semaphore s(mutex_key, false);
+    if(!s.is_init())
     {
         perror("ERROR: semaphore error");
         exit(EXIT_FAILURE);
@@ -63,6 +63,12 @@ int main(int argc, char* argv[])
     srand(time(0) ^ pid);
 
     time_t sec_start = time(NULL);
+
+    int msgid = msgget(KEY_MESSAGE_QUEUE, IPC_CREAT | 0666); 
+    if (msgid == -1) {
+        perror("user_proc: Error creating Message Queue");
+        exit(EXIT_FAILURE);
+    }
 
     struct shmid_ds shmid_ds;
     shmctl(shm_id, IPC_STAT, &shmid_ds);
@@ -77,7 +83,7 @@ int main(int argc, char* argv[])
 
     
 	
-	shm_addr = ( char* )shmat( shmid, NULL, 0 );
+	shm_addr = ( char* )shmat( shm_id, NULL, 0 );
 	if ( !shm_addr )
 	{
 		perror( "ERROR: OSS: error attching memory" );
@@ -87,12 +93,12 @@ int main(int argc, char* argv[])
 
 	struct SysInfo* sys_info = ( struct SysInfo* ) ( shm_addr );
 
-	struct UserProcesses* user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysClock ) );
+	struct UserProcesses* user_procs = ( struct UserProcesses* ) ( shm_addr + sizeof( struct SysInfo ) );
 
 	struct ResourceDescriptors* res_des = ( struct ResourceDescriptors* ) ( user_procs ) + ( sizeof( struct UserProcesses ) * MAX_PROCESSES );
 
     s.Wait();
-    log_message("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " start success ", pid, next_proc, logfile);
+    write_log("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " start success ", pid, next_proc, logfile);
     s.Signal();
 
     while(true)
