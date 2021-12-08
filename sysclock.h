@@ -87,7 +87,7 @@ struct message {
 const long OSS_MQ_TYPE = 1000;
 
 
-const key_t mutex_key = 0x563535;
+const key_t mutex_key = ftok(".",'c');
 
 
 std::string int2str( const int val );
