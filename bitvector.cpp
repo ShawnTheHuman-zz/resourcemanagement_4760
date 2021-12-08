@@ -37,7 +37,7 @@ bitvector::~bitvector()
 }
 
 // gets bitvector at location
-void bitvector::get_bit(int addr)
+bool bitvector::get_bit(int addr)
 {
 	if( addr < 0 || addr >= _size * 8)
 		return 0;
@@ -59,7 +59,7 @@ void bitvector::set_bit(int addr, bool value)
 	
 	else
 	{
-		usageArray[addr/8] &= ~(1 << 7 - (addr%8)));
+		_usageArray[addr/8] &= ~(1 << 7 - (addr%8)));
 	}
 
 }
