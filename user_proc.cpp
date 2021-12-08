@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
     {
         bool req_resource = rand_prob((float)(max_time/100.0f));
         bool close_resource = rand_prob((float)(max_time/100.0f));
-        bool shutdown = rand_prob(50.0f));
+        bool shutdown = rand_prob(50.0f);
 
         s.Wait();
         sys_info->clock_nanoseconds += get_random(1000, 500000);
