@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 
     time_t sec_start = time(NULL);
 
-    int msgid = msgget(KEY_MESSAGE_QUEUE, IPC_CREAT | 0666); 
+    int msgid = msgget(message_queue_key, IPC_CREAT | 0666); 
     if (msgid == -1) {
         perror("user_proc: Error creating Message Queue");
         exit(EXIT_FAILURE);
@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
         if(sig_int_flag || (time(NULL) - sec_start > 1 && shutdown))
         {
             s.Wait();
-            log_message("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " shutting down ", pid, next_proc, logfile);
+            write_log("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " shutting down ", pid, next_proc, logfile);
             s.Signal();
 
             msg.type = OSS_MQ_TYPE;
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
             int res = get_random(0, MAX_RESOURCES-1);
 
             s.Wait();
-            log_message("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " requesting resource " + res.c_str(), pid, next_proc, logfile);
+            write_log("USER_PROC: ", sys_info->clock_seconds, sys_info->clock_nanoseconds, " requesting resource " + res.c_str(), pid, next_proc, logfile);
             s.Signal();
 
             msg.type = OSS_MQ_TYPE;
