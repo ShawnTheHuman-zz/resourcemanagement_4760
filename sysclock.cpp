@@ -132,7 +132,7 @@ std::string string_format(const std::string fmt, ...)
 		va_end(ap);
 		if (n > -1 && n < size) 
 		{ 
-			str.resize();
+			str.resize(n);
 			return str;
 		}
 		if (n > -1)  
