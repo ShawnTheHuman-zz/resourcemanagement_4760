@@ -147,7 +147,7 @@ int oss(string logfile, bool verbose_mode){
 
 	/* create semaphore */
 	Semaphore s(mutex_key, true, 1);
-	cout << s.init();
+	cout << s.is_init();
 	/* checking if semaphore is initialized */
 	if(!s.is_init())
 	{
