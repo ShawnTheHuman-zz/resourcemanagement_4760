@@ -35,7 +35,7 @@ const int max_runtime = 3; // seconds
 
 const char* child = "./user_proc";
 
-
+/* struct for the clock and matrices to store system information */
 struct SysInfo {
 	
 	int clock_seconds;
@@ -64,7 +64,7 @@ struct UserProcesses {
 
 };
 
-
+/* shared memory key */
 const key_t shm_key = ftok("./oss.h",'a');
 int shm_id;
 char* shm_addr;
@@ -72,7 +72,7 @@ char* shm_addr;
 
 const key_t message_queue_key = ftok("./oss.cpp",'b');
 
-
+/* struct for messages */
 struct message {
 	long type;
 	int action,
@@ -89,7 +89,7 @@ const long OSS_MQ_TYPE = 1000;
 
 const key_t mutex_key = ftok("makefile",'c');
 
-
+/* function declarations */
 std::string int2str( const int val );
 std::string float2str( const float val );
 void print_array( const int* arr, const int arrsize, const int cols );
