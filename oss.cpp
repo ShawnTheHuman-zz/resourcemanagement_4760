@@ -1,6 +1,6 @@
 /*
 	Shawn Brown
-
+	project 5 - 4760
 	oss.cpp
 
 */
@@ -26,8 +26,6 @@ static void usage(std::string);
 using namespace std;
 
 
-
-
 /* signal handler */
 volatile sig_atomic_t sig_int_flag = 0;
 
@@ -46,7 +44,7 @@ int main(int argc, char* argv[])
 	string logfile = "logfile";
 	bool verbose_mode = false;
 
-
+	/* Checks arguments */
 	while (( opt = getopt(argc, argv, "hv" )) != -1 )
 	{
 
@@ -114,7 +112,6 @@ int oss(string logfile, bool verbose_mode){
 
 	
 	srand( time(0) ^ pid );
-
 
 	time_t sec_start = time(NULL);
 
