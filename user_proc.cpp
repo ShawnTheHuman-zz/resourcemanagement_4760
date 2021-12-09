@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signal_handler);
 
-    //Semaphore s(mutex_key, false);
+    Semaphore s(mutex_key, false);
     if(!s.is_init())
     {
         perror("ERROR: semaphore error");
