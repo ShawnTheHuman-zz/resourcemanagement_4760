@@ -65,13 +65,14 @@ struct UserProcesses {
 };
 
 /* shared memory key */
-const key_t shm_key = ftok("./oss.h",'a');
+//const key_t shm_key = ftok("./oss.h",'a');
+const key_t shm_key = 0x711003;
 int shm_id;
 char* shm_addr;
 
 
-const key_t message_queue_key = ftok("./oss.cpp",'b');
-
+//const key_t message_queue_key = ftok("./oss.cpp",'b');
+const key_t message_queue_key = 0x54678;
 /* struct for messages */
 struct message {
 	long type;
@@ -87,8 +88,8 @@ struct message {
 const long OSS_MQ_TYPE = 1000;
 
 
-const key_t mutex_key = ftok("makefile",'c');
-
+//const key_t mutex_key = ftok("makefile",'c');
+const key_t mutex_key = 0x656f606;
 /* function declarations */
 std::string int2str( const int val );
 std::string float2str( const float val );
