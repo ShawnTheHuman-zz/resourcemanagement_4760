@@ -49,7 +49,14 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signal_handler);
 
+<<<<<<< HEAD
     Semaphore s(mutex_key, false);
+=======
+
+
+    const key_t mutex_key = ftok(".",'R');
+    Semaphore s(mutex_key, true, 1);
+>>>>>>> 6d84ee8a431013ee84fefdca491d48e0df75c993
     if(!s.is_init())
     {
         perror("ERROR: semaphore error");
