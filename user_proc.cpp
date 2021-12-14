@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     signal(SIGINT, signal_handler);
 
     
-    Semaphore s(mutex_key, true, 1);
+    Semaphore s(mutex_key, false);
     if(!s.is_init())
     {
         perror("ERROR: semaphore error");
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
             msg.proc_pid = pid;
             msg.res_index = res;
 
-            int n = msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
+            msgsnd(msgid, (void *) &msg, sizeof(message), IPC_NOWAIT);
 
             msgrcv(msgid, (void *) &msg, sizeof(message), pid, 0); 
 
