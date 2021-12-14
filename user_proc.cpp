@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signal_handler);
 
-    const key_t mutex_key = ftok("./sysclock.h",'R');
+    const key_t mutex_key = ftok("sysclock.h",'R');
     Semaphore s(mutex_key, false);
     if(!s.is_init())
     {
