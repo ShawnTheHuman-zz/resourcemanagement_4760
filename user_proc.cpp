@@ -50,7 +50,7 @@ int main(int argc, char* argv[])
     signal(SIGINT, signal_handler);
 
     const key_t mutex_key = ftok("./bitvector.h",'R');
-    Semaphore s(mutex_key, false);
+    Semaphore s(mutex_key, true, 1);
     if(!s.is_init())
     {
         perror("ERROR: semaphore error");
