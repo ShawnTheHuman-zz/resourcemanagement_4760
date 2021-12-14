@@ -70,6 +70,7 @@ const key_t shm_key = ftok(".",98708);
 int shm_id;
 char* shm_addr;
 
+const key_t mutex_key = 0x54321;
 
 const key_t message_queue_key = ftok(".",6548);
 //const key_t message_queue_key = 0x54678;

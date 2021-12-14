@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 
     signal(SIGINT, signal_handler);
 
-    key_t mutex_key = ftok("./bitvector.h",'R');
+    
     Semaphore s(mutex_key, true, 1);
     if(!s.is_init())
     {

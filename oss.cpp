@@ -143,7 +143,7 @@ int oss(string logfile, bool verbose_mode){
 	int count_died_nat = 0;
 
 	/* create semaphore */
-	key_t mutex_key = ftok("./bitvector.h",'R');
+	
 	Semaphore s(mutex_key,true,1);
 	cout << s.is_init();
 	/* checking if semaphore is initialized */
